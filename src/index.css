@@ -490,13 +490,12 @@ body {
 }
 
 .settings-section {
-    max-width: 1120px;
-    margin: 0 auto;
+    padding: 0 100px;
 
 }
 
 .menu {
-    width: 280px;
+    width: 350px;
     height: min-content;
     border: 1px solid #DDDDDF;
     border-radius: 15px;
@@ -543,6 +542,8 @@ body {
 .menu-section {
     display: flex;
     gap: 15px;
+    
+
 }
 
 .main-content {
@@ -601,8 +602,6 @@ body {
 }
 
 
-.color-settings-container {}
-
 /* Table Styling */
 .color-table {
     width: 100%;
@@ -619,8 +618,8 @@ body {
 
 }
 
-.color-table tr {
-    border-radius: 15px;
+.table-heading {
+    border-radius: 20px;
 }
 
 .color-table th {
@@ -670,6 +669,14 @@ input {
 
 }
 
+.frame-img {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin-left: 15px;
+
+}
 
 
 
@@ -1129,7 +1136,18 @@ input {
 
 
 
-
+@media screen and (max-width: 1150px) {
+    .menu-section {
+        flex-direction: column;
+    }
+    .color-table{
+        overflow-x: auto;
+    }
+    .settings-section {
+        padding: 0 10px;
+    
+    }
+}
 
 
 @media screen and (max-width: 768px) {
@@ -1141,8 +1159,6 @@ input {
         width: calc(100% - 60px);
         left: 200px;
     }
-
-
 
     .nav-links {
         display: none;

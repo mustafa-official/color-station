@@ -148,7 +148,7 @@ const Main = () => {
               <div className="color-settings-container">
                 <table className="color-table">
                   <thead>
-                    <tr>
+                    <tr className="table-heading">
                       <th>Name</th>
                       <th>Value</th>
                       <th></th>

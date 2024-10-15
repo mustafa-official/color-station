@@ -24,7 +24,7 @@ const SortableRow = ({
   });
 
   const nameRef = useRef(null);
-  const modalRef = useRef(null); // Ref for modal content
+  const modalRef = useRef(null);
 
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
@@ -91,8 +91,21 @@ const SortableRow = ({
 
   return (
     <>
-      <tr ref={dragDropRef} style={{ opacity: isDragging ? 0.5 : 1 }}>
-        <td>
+      <tr
+        ref={dragDropRef}
+        style={{
+          opacity: isDragging ? 0.5 : 1,
+          borderRadius: "10px",
+          border: "1px solid #fff",
+        }}
+      >
+        <td
+          style={{
+            position: "relative",
+            paddingLeft: "30px",
+            color: "#454D54",
+          }}
+        >
           <img className="frame-img" src={frame} alt="" />
           {color.name}
         </td>
@@ -126,7 +139,7 @@ const SortableRow = ({
                 </button>
               </li>
               <li>
-                <button style={{color: "#A7AAAD"}} onClick={handleDelete}>
+                <button style={{ color: "#A7AAAD" }} onClick={handleDelete}>
                   <img src={trash} alt="" />
                   Delete
                 </button>

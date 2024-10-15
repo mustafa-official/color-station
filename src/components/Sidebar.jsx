@@ -23,11 +23,7 @@ const Sidebar = () => {
             </a>
           </li>
           <hr className="line" />
-          <li>
-            <a href="#">
-              <span className="text">Analytics</span>
-            </a>
-          </li>
+          
           <li>
             <a href="#">
               <span className="text">Course</span>
