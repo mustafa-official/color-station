@@ -1,13 +1,13 @@
-// Main.jsx
 import { useState } from "react";
-import { DndProvider } from "react-dnd"; // Import DndProvider
-import { HTML5Backend } from "react-dnd-html5-backend"; // Import HTML5 backend
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import blocks from "../assets/blocks.png";
 import general from "../assets/General.png";
 import design from "../assets/design.png";
 import integration from "../assets/integration.png";
 import search from "../assets/search.png";
 import SortableRow from "./SortableRow";
+import { ChromePicker } from "react-color";
 
 const initialColors = [
   { id: 1, name: "Secondary", value: "#ED1976" },
@@ -18,31 +18,64 @@ const initialColors = [
 
 const Main = () => {
   const [colors, setColors] = useState(initialColors);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState({
+    name: "",
+    value: "#ffffff",
+  });
 
   const handleDragEnd = (draggedId, targetId) => {
     if (draggedId !== targetId) {
       const draggedColor = colors.find((color) => color.id === draggedId);
       const targetIndex = colors.findIndex((color) => color.id === targetId);
       const updatedColors = colors.filter((color) => color.id !== draggedId);
-      updatedColors.splice(targetIndex, 0, draggedColor); // Insert dragged color at target index
-      setColors(updatedColors); // Update state
+      updatedColors.splice(targetIndex, 0, draggedColor);
+      setColors(updatedColors);
     }
   };
-  // Function to update color by id
+
   const updateColor = (id, updatedColor) => {
     const updatedColors = colors.map((color) =>
       color.id === id ? { ...color, ...updatedColor } : color
     );
-    setColors(updatedColors); // Update state with new values
+    setColors(updatedColors);
+  };
+
+  const addNewColor = (newColor) => {
+    setColors((prevColors) => [...prevColors, { ...newColor, id: Date.now() }]);
+  };
+
+  const openDrawer = (color = { name: "", value: "#ffffff" }) => {
+    setSelectedColor(color);
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedColor({ name: "", value: "#ffffff" }); // Reset selectedColor when closing
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor((prev) => ({ ...prev, value: color.hex }));
+  };
+
+  const handleSubmit = () => {
+    if (selectedColor.id) {
+      updateColor(selectedColor.id, selectedColor);
+    } else {
+      addNewColor(selectedColor);
+    }
+    closeDrawer();
   };
 
   const handleDuplicateColor = (duplicatedColor) => {
-    setColors((prevColors) => [...prevColors, duplicatedColor]);
+    addNewColor(duplicatedColor);
   };
+
   const handleDeleteColor = (id) => {
-    const updatedColors = colors.filter((color) => color.id !== id);
-    setColors(updatedColors);
+    setColors((prevColors) => prevColors.filter((color) => color.id !== id));
   };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <main>
@@ -118,7 +151,7 @@ const Main = () => {
                     <tr>
                       <th>Name</th>
                       <th>Value</th>
-                      <th>Edit</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -134,11 +167,66 @@ const Main = () => {
                     ))}
                   </tbody>
                 </table>
-                <button className="add-color">+ Add Color</button>
+                <button className="add-color" onClick={() => openDrawer()}>
+                  + Add Color
+                </button>
               </div>
             </div>
           </div>
         </div>
+        <div className={`drawer ${isDrawerOpen ? "open" : ""}`}>
+          <div className="drawer-main">
+            <div className="drawer-content">
+              <p>Name</p>
+              <input
+              required
+                name="name"
+                type="text"
+                value={selectedColor.name} // Controlled input for name
+                onChange={(e) =>
+                  setSelectedColor({ ...selectedColor, name: e.target.value })
+                }
+              />
+              <hr className="line" />
+
+              <p>Value</p>
+              <div className="value-color">
+                <h5>Color</h5>
+                <div className="color-container">
+                  <div
+                    className="color-box"
+                    style={{ backgroundColor: selectedColor.value }}
+                  ></div>
+                  <input
+                  required
+                    className="input-text"
+                    type="text"
+                    value={selectedColor.value} // Controlled input for value
+                    onChange={(e) =>
+                      setSelectedColor({
+                        ...selectedColor,
+                        value: e.target.value,
+                      })
+                    } // Allow editing of the color value
+                  />
+                </div>
+
+                <ChromePicker
+                  color={selectedColor.value}
+                  onChange={handleColorChange}
+                />
+              </div>
+            </div>
+            <div className="drawer-btn">
+              <button onClick={closeDrawer}>Cancel</button>
+              <button onClick={handleSubmit}>Save</button>
+            </div>
+          </div>
+        </div>
+
+        {isDrawerOpen && (
+          <div className="drawer-overlay" onClick={closeDrawer}></div>
+        )}
       </main>
     </DndProvider>
   );

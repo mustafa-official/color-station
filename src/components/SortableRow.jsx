@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ChromePicker } from "react-color";
 import button from "../assets/Button.png";
 import edit from "../assets/edit.png";
 import duplicate from "../assets/copy.png";
 import trash from "../assets/Trash.png";
+import frame from "../assets/Frame.png";
 
 const ItemType = "COLOR_ROW";
 
@@ -92,7 +93,8 @@ const SortableRow = ({
     <>
       <tr ref={dragDropRef} style={{ opacity: isDragging ? 0.5 : 1 }}>
         <td>
-          <span className="icon">🎨</span> {color.name}
+          <img className="frame-img" src={frame} alt="" />
+          {color.name}
         </td>
         <td>
           <div
@@ -113,13 +115,21 @@ const SortableRow = ({
           <div className="modal-content" ref={modalRef}>
             <ul>
               <li>
-                <button onClick={openDrawer}><img src={edit} alt="" /> Edit</button>
+                <button onClick={openDrawer}>
+                  <img src={edit} alt="" /> Edit
+                </button>
               </li>
               <li>
-                <button onClick={handleDuplicate}><img src={duplicate} alt="" />Duplicate</button>
+                <button onClick={handleDuplicate}>
+                  <img src={duplicate} alt="" />
+                  Duplicate
+                </button>
               </li>
               <li>
-                <button onClick={handleDelete}><img src={trash} alt="" />Delete</button>
+                <button style={{color: "#A7AAAD"}} onClick={handleDelete}>
+                  <img src={trash} alt="" />
+                  Delete
+                </button>
               </li>
             </ul>
           </div>
@@ -135,6 +145,9 @@ const SortableRow = ({
               name="name"
               type="text"
               defaultValue={selectedColor.name}
+              onChange={(e) =>
+                setSelectedColor({ ...selectedColor, name: e.target.value })
+              }
             />
             <hr className="line" />
 

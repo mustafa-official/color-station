@@ -577,7 +577,7 @@ body {
 
 .search-input {
     appearance: none;
-    border: 2px solid #d1d5db;
+    border: 1px solid #d1d5db;
     padding-left: 40px;
     width: 100%;
     padding: 8px 35px;
@@ -596,6 +596,8 @@ body {
     top: 50%;
     left: 10%;
     transform: translate(-50%, -50%);
+    width: 7%;
+
 }
 
 
@@ -646,11 +648,10 @@ body {
     background: transparent;
     opacity: 0;
     cursor: pointer;
+    margin-top: 8px;
 }
 
-.edit-button {
-    margin-top: 15px;
-}
+
 
 /* Input Styling */
 input {
@@ -703,6 +704,7 @@ input {
 
 .color-table tbody tr:hover {
     background: #F4F4F5;
+    border-radius: 10px;
 }
 
 .color-table tr:hover .edit-button button {
@@ -736,7 +738,7 @@ input {
 }
 
 .modal-content button {
-   
+
     padding: 5px 8px;
     border: none;
     border-radius: 5px;
