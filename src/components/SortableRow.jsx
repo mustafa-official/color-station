@@ -1,16 +1,29 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { ChromePicker } from "react-color";
 import button from "../assets/Button.png";
+import edit from "../assets/edit.png";
+import duplicate from "../assets/copy.png";
+import trash from "../assets/Trash.png";
 
 const ItemType = "COLOR_ROW";
 
-const SortableRow = ({ color, onDragEnd }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Drawer state
-  const [selectedColor, setSelectedColor] = useState({ name: "", value: "" }); // Store selected color details
+const SortableRow = ({
+  color,
+  onDragEnd,
+  onUpdateColor,
+  onDuplicateColor,
+  onDeleteColor,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState({
+    name: color.name,
+    value: color.value,
+  });
 
-  const nameRef = useRef(null); // Ref for name input
-  const colorRef = useRef(null); // Ref for color input
+  const nameRef = useRef(null);
+  const modalRef = useRef(null); // Ref for modal content
 
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
@@ -22,39 +35,58 @@ const SortableRow = ({ color, onDragEnd }) => {
 
   const [, drop] = useDrop({
     accept: ItemType,
-    drop: (item) => {
-      onDragEnd(item.id, color.id); // Call drag end handler
-    },
+    drop: (item) => onDragEnd(item.id, color.id),
   });
 
-  const ref = React.useRef(null);
-  const dragDropRef = drag(drop(ref));
+  const dragDropRef = drag(drop(useRef(null)));
 
   const openModal = () => setIsModalOpen(true);
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setIsDrawerOpen(false); // Ensure drawer closes when modal closes
-  };
-
-  const openDrawer = () => {
-    setSelectedColor({ name: color.name, value: color.value }); // Set selected color
-    setIsDrawerOpen(true); // Open drawer
-  };
-
+  const closeModal = () => setIsModalOpen(false);
+  const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
-
-    const name = nameRef.current.value; // Get name from ref
-    const value = colorRef.current.value; // Get color value from ref
-
-    console.log("Submitted:", { name, value });
-
-    // Optionally: Handle the submitted values (e.g., save to state or send to server)
-    closeDrawer(); // Close drawer after submission
+  const handleColorChange = (newColor) => {
+    setSelectedColor((prev) => ({ ...prev, value: newColor.hex }));
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const name = nameRef.current.value;
+    onUpdateColor(color.id, { name, value: selectedColor.value });
+    closeDrawer();
+  };
+
+  const handleDuplicate = () => {
+    const duplicatedColor = {
+      ...color,
+      id: Date.now(),
+      name: `${color.name} Copy`,
+    };
+    onDuplicateColor(duplicatedColor);
+    closeModal();
+  };
+
+  const handleDelete = () => {
+    onDeleteColor(color.id);
+    console.log("Deleted:", color);
+  };
+
+  // Close the modal if clicked outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
 
   return (
     <>
@@ -76,38 +108,36 @@ const SortableRow = ({ color, onDragEnd }) => {
         </td>
       </tr>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content" ref={modalRef}>
             <ul>
               <li>
-                <button onClick={openDrawer}>Edit</button> {/* Open Drawer */}
+                <button onClick={openDrawer}><img src={edit} alt="" /> Edit</button>
               </li>
               <li>
-                <button>Duplicate</button>
+                <button onClick={handleDuplicate}><img src={duplicate} alt="" />Duplicate</button>
               </li>
               <li>
-                <button>Delete</button>
+                <button onClick={handleDelete}><img src={trash} alt="" />Delete</button>
               </li>
             </ul>
-            <button onClick={closeModal}>Close</button>
           </div>
         </div>
       )}
 
-      {/* Drawer */}
       <div className={`drawer ${isDrawerOpen ? "open" : ""}`}>
         <div className="drawer-main">
           <div className="drawer-content">
             <p>Name</p>
             <input
-              ref={nameRef} // Ref for name input
+              ref={nameRef}
               name="name"
               type="text"
               defaultValue={selectedColor.name}
             />
             <hr className="line" />
+
             <p>Value</p>
             <div className="value-color">
               <h5>Color</h5>
@@ -117,23 +147,26 @@ const SortableRow = ({ color, onDragEnd }) => {
                   style={{ backgroundColor: selectedColor.value }}
                 ></div>
                 <input
-                  ref={colorRef} // Ref for color input
-                  name="color"
                   className="input-text"
                   type="text"
-                  defaultValue={selectedColor.value}
+                  value={selectedColor.value}
+                  readOnly
                 />
               </div>
+
+              <ChromePicker
+                color={selectedColor.value}
+                onChange={handleColorChange}
+              />
             </div>
           </div>
           <div className="drawer-btn">
             <button onClick={closeDrawer}>Cancel</button>
-            <button onClick={handleSubmit}>Save</button> {/* Save button */}
+            <button onClick={handleSubmit}>Save</button>
           </div>
         </div>
       </div>
 
-      {/* Drawer Overlay */}
       {isDrawerOpen && (
         <div className="drawer-overlay" onClick={closeDrawer}></div>
       )}

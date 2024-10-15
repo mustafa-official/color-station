@@ -726,22 +726,27 @@ input {
 
 .small-modal-content {
     width: 300px;
-    height: 100px;
+    height: min-content;
     background-color: #fff;
     padding: 10px;
-    text-align: center;
+
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
 }
 
-button {
-    margin-top: 10px;
-    padding: 5px 10px;
+.modal-content button {
+   
+    padding: 5px 8px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-align: left;
+    background: transparent;
+}
+
+.modal-content button:hover {
+    background: #F0F0F0;
 }
 
 /* Modal styles */
@@ -750,8 +755,8 @@ button {
     top: 0;
     right: 0;
     bottom: 0;
-    width: 200px;
-    height: 60px;
+    width: 150px;
+    height: min-content;
     margin-top: 300px;
     margin-right: 200px;
     z-index: 1000;
@@ -763,6 +768,12 @@ button {
     border-radius: 5px;
     text-align: center;
     box-shadow: 0px 4px 8px 0px rgba(29, 35, 39, 0.5);
+}
+
+.modal-content button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 /* Drawer styles */
@@ -791,25 +802,41 @@ button {
     gap: 15px;
 }
 
-.drawer-content input {
-    border: 1px solid gray;
-    width: 100%;
-}
+
 
 .value-color {
     display: flex;
     align-items: center;
+    flex-direction: column;
+    gap: 8px;
     justify-content: space-between;
+}
+
+.value-cont {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
 }
 
 /* Container styling */
 .color-container {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
+    padding-left: 5px;
+
+
+}
+
+.container-clr {
+    display: flex;
+    flex-direction: column;
     border-radius: 4px;
-    padding: 5px;
-    width: 180px;
+    border: 1px solid #ddd;
+    width: 50%;
+
+
 }
 
 /* Color box */
@@ -817,19 +844,23 @@ button {
     width: 20px;
     height: 20px;
     margin-right: 10px;
-    border-radius: 4px;
+
+
 }
-.drawer-main{
+
+.drawer-main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 95vh;
 }
-.drawer-btn{
+
+.drawer-btn {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
+
 /* Input styling */
 .input-text {
     border: none;

@@ -28,11 +28,23 @@ const Main = () => {
       setColors(updatedColors); // Update state
     }
   };
+  // Function to update color by id
+  const updateColor = (id, updatedColor) => {
+    const updatedColors = colors.map((color) =>
+      color.id === id ? { ...color, ...updatedColor } : color
+    );
+    setColors(updatedColors); // Update state with new values
+  };
 
+  const handleDuplicateColor = (duplicatedColor) => {
+    setColors((prevColors) => [...prevColors, duplicatedColor]);
+  };
+  const handleDeleteColor = (id) => {
+    const updatedColors = colors.filter((color) => color.id !== id);
+    setColors(updatedColors);
+  };
   return (
     <DndProvider backend={HTML5Backend}>
-      {" "}
-      {/* Wrap your component with DndProvider */}
       <main>
         <div className="navbar-header">
           <div className="logo-blocks">
@@ -115,6 +127,9 @@ const Main = () => {
                         key={color.id}
                         color={color}
                         onDragEnd={handleDragEnd}
+                        onUpdateColor={updateColor}
+                        onDuplicateColor={handleDuplicateColor}
+                        onDeleteColor={handleDeleteColor}
                       />
                     ))}
                   </tbody>
